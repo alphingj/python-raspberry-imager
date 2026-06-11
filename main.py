@@ -334,11 +334,10 @@ class RPiImager(QMainWindow):
             data = json.loads(result.stdout)
             for dev in data.get('blockdevices', []):
                 if dev.get('type') == 'disk' and dev.get('mountpoint') is None:
-                    if dev.get('tran') in ('usb', None):
-                        model = dev.get('model', 'Unknown')[:20]
-                        size = dev.get('size', '?')
-                        name = dev['name']
-                        devices.append(f"/dev/{name} ({size}) - {model}")
+                    model = dev.get('model', 'Unknown')[:20]
+                    size = dev.get('size', '?')
+                    name = dev['name']
+                    devices.append(f"/dev/{name} ({size}) - {model}")
         except Exception:
             pass
         return devices
@@ -357,7 +356,8 @@ class RPiImager(QMainWindow):
         if not self.selected_image:
             QMessageBox.warning(self, 'Error', 'Please select an image file first.')
             return
-        if self.device_combo.currentIndex() <= 0:
+        current_text = self.device_combo.currentText()
+        if 'No' in current_text or current_text == '':
             QMessageBox.warning(self, 'Error', 'Please select a target device.')
             return
 
